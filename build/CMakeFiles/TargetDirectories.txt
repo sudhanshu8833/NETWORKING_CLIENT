@@ -1,0 +1,3 @@
+/Users/sid/Desktop/algo-trading/INTERVIEW_PREP/http_client/build/CMakeFiles/http_server.dir
+/Users/sid/Desktop/algo-trading/INTERVIEW_PREP/http_client/build/CMakeFiles/edit_cache.dir
+/Users/sid/Desktop/algo-trading/INTERVIEW_PREP/http_client/build/CMakeFiles/rebuild_cache.dir
