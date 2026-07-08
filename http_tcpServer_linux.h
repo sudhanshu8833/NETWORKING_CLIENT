@@ -26,9 +26,10 @@ namespace http{
 
             int startServer();
             void closeServer();
-            std::string buildResponse();
+            std::string buildResponse(std::string message);
             void acceptConnection(int &new_socket);
-            void sendResponse();
+            void sendResponse(const std::string &message = "");
+            void sendUpgradeRequest(std::string &message);
     };
 }
 

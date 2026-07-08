@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/sid/Desktop/algo-trading/INTERVIEW_PREP/http_client/http_tcpServer_linux.cpp" "CMakeFiles/http_server.dir/http_tcpServer_linux.cpp.o" "gcc" "CMakeFiles/http_server.dir/http_tcpServer_linux.cpp.o.d"
+  "/Users/sid/Desktop/algo-trading/INTERVIEW_PREP/http_client/http_tcpServer_parser.cpp" "CMakeFiles/http_server.dir/http_tcpServer_parser.cpp.o" "gcc" "CMakeFiles/http_server.dir/http_tcpServer_parser.cpp.o.d"
   "/Users/sid/Desktop/algo-trading/INTERVIEW_PREP/http_client/server_linux.cpp" "CMakeFiles/http_server.dir/server_linux.cpp.o" "gcc" "CMakeFiles/http_server.dir/server_linux.cpp.o.d"
   )
 

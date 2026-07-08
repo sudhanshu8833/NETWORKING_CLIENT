@@ -228,6 +228,21 @@ HttpServer_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 HttpServer_SOURCE_DIR:STATIC=/Users/sid/Desktop/algo-trading/INTERVIEW_PREP/http_client
 
+//Path to a library.
+OPENSSL_CRYPTO_LIBRARY:FILEPATH=/opt/homebrew/lib/libcrypto.dylib
+
+//Path to a file.
+OPENSSL_INCLUDE_DIR:PATH=/opt/homebrew/include
+
+//Path to a library.
+OPENSSL_SSL_LIBRARY:FILEPATH=/opt/homebrew/lib/libssl.dylib
+
+//Arguments to supply to pkg-config
+PKG_CONFIG_ARGN:STRING=
+
+//pkg-config executable
+PKG_CONFIG_EXECUTABLE:FILEPATH=PKG_CONFIG_EXECUTABLE-NOTFOUND
+
 
 ########################
 # INTERNAL cache entries
@@ -374,4 +389,16 @@ CMAKE_TAPI-ADVANCED:INTERNAL=1
 CMAKE_UNAME:INTERNAL=/usr/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//Details about finding OpenSSL
+FIND_PACKAGE_MESSAGE_DETAILS_OpenSSL:INTERNAL=[/opt/homebrew/lib/libcrypto.dylib][/opt/homebrew/include][ ][v3.6.3()]
+//ADVANCED property for variable: OPENSSL_CRYPTO_LIBRARY
+OPENSSL_CRYPTO_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENSSL_INCLUDE_DIR
+OPENSSL_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENSSL_SSL_LIBRARY
+OPENSSL_SSL_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: PKG_CONFIG_ARGN
+PKG_CONFIG_ARGN-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: PKG_CONFIG_EXECUTABLE
+PKG_CONFIG_EXECUTABLE-ADVANCED:INTERNAL=1
 

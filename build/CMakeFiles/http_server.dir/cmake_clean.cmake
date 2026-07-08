@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/http_server.dir/http_tcpServer_linux.cpp.o"
   "CMakeFiles/http_server.dir/http_tcpServer_linux.cpp.o.d"
+  "CMakeFiles/http_server.dir/http_tcpServer_parser.cpp.o"
+  "CMakeFiles/http_server.dir/http_tcpServer_parser.cpp.o.d"
   "CMakeFiles/http_server.dir/server_linux.cpp.o"
   "CMakeFiles/http_server.dir/server_linux.cpp.o.d"
   "http_server"

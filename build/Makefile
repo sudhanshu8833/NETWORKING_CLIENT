@@ -153,6 +153,30 @@ http_tcpServer_linux.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/http_server.dir/build.make CMakeFiles/http_server.dir/http_tcpServer_linux.cpp.s
 .PHONY : http_tcpServer_linux.cpp.s
 
+http_tcpServer_parser.o: http_tcpServer_parser.cpp.o
+.PHONY : http_tcpServer_parser.o
+
+# target to build an object file
+http_tcpServer_parser.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/http_server.dir/build.make CMakeFiles/http_server.dir/http_tcpServer_parser.cpp.o
+.PHONY : http_tcpServer_parser.cpp.o
+
+http_tcpServer_parser.i: http_tcpServer_parser.cpp.i
+.PHONY : http_tcpServer_parser.i
+
+# target to preprocess a source file
+http_tcpServer_parser.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/http_server.dir/build.make CMakeFiles/http_server.dir/http_tcpServer_parser.cpp.i
+.PHONY : http_tcpServer_parser.cpp.i
+
+http_tcpServer_parser.s: http_tcpServer_parser.cpp.s
+.PHONY : http_tcpServer_parser.s
+
+# target to generate assembly for a file
+http_tcpServer_parser.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/http_server.dir/build.make CMakeFiles/http_server.dir/http_tcpServer_parser.cpp.s
+.PHONY : http_tcpServer_parser.cpp.s
+
 server_linux.o: server_linux.cpp.o
 .PHONY : server_linux.o
 
@@ -189,6 +213,9 @@ help:
 	@echo "... http_tcpServer_linux.o"
 	@echo "... http_tcpServer_linux.i"
 	@echo "... http_tcpServer_linux.s"
+	@echo "... http_tcpServer_parser.o"
+	@echo "... http_tcpServer_parser.i"
+	@echo "... http_tcpServer_parser.s"
 	@echo "... server_linux.o"
 	@echo "... server_linux.i"
 	@echo "... server_linux.s"
