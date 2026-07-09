@@ -18,6 +18,7 @@ namespace http{
             std::string m_ip_address;
             int m_port;
             int m_socket;
+            int m_epoll;
             int m_new_socket;
             long m_incomingMessage;
             struct sockaddr_in m_socketAddress;

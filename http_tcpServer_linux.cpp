@@ -7,6 +7,9 @@
 #include <openssl/bio.h>
 #include <openssl/buffer.h>
 #include <openssl/evp.h>
+#include <sys/epoll.h>
+#include <sys/socket.h>
+#include <unordered_set>
 
 namespace {
 
@@ -23,9 +26,10 @@ namespace {
 namespace http
 {
     const int BUFFER_SIZE = 30720;
+    const int MAX_EVENTS = 10'000;
 
     TcpServer::TcpServer(std::string ip_address, int port)
-        : m_ip_address(ip_address), m_port(port), m_socket(),
+        : m_ip_address(ip_address), m_port(port), m_socket(), m_epoll(),
         m_new_socket(), m_incomingMessage(), m_socketAddress(),
         m_socketAddress_len(sizeof(m_socketAddress)),
         m_serverMessage()
@@ -33,6 +37,7 @@ namespace http
         m_socketAddress.sin_family = AF_INET;
         m_socketAddress.sin_port = htons(m_port);
         m_socketAddress.sin_addr.s_addr = inet_addr(m_ip_address.c_str());
+
         if (startServer() != 0){
             std::ostringstream ss;
             ss << "Failed to start server with PORT: " << ntohs(m_socketAddress.sin_port);
@@ -59,6 +64,18 @@ namespace http
         if (bind(m_socket, (sockaddr *)&m_socketAddress, m_socketAddress_len) < 0){
             exitWithError("Cannot connect socket to address");
             return 1;
+        }
+
+        m_epoll = epoll_create1(0);
+        if(m_epoll == -1){
+            exitWithError("Failed to create epoll");
+        }
+        epoll_event event{};
+        event.events = EPOLLIN;
+        event.data.fd = m_socket;
+
+        if (epoll_ctl(m_epoll, EPOLL_CTL_ADD, m_socket, &event) == -1){
+            exitWithError("Failed to add server to epoll instance");
         }
         return 0;
     }
@@ -148,50 +165,62 @@ namespace http
         ss<< "\n*** Listening on ADDRESS: " << inet_ntoa(m_socketAddress.sin_addr) << "PORT :" << ntohs(m_socketAddress.sin_port) << " ***\n\n";
         log(ss.str());
 
-        int bytesReceived;
+        epoll_event events[MAX_EVENTS];
+        std::unordered_set<int> upgraded;
 
         while(true){
-            log("====== Waiting for a new connection =====\n\n\n");
-            acceptConnection(m_new_socket);
+            int numEvents = epoll_wait(m_epoll, events, MAX_EVENTS, -1);
 
-            char buffer[BUFFER_SIZE] = {0};
-
-            bytesReceived = read(m_new_socket, buffer, BUFFER_SIZE);
-
-            if (bytesReceived < 0){
-                exitWithError("Failed to read bytes from client socket connnection");
+            if (numEvents == -1){
+                exitWithError("epoll_wait failed");
             }
 
-            std::ostringstream ss;
+            for(int i = 0; i< numEvents; ++i){
+                int fd = events[i].data.fd;
 
-            ss<< "----- Recieved request from client ---- \n\n";
-            log(ss.str());
+                if (fd == m_socket){
+                    int client = accept(m_socket, (sockaddr *)&m_socketAddress, &m_socketAddress_len);
+                    if (client < 0) continue;
 
+                    epoll_event ev{};
+                    ev.events = EPOLLIN;
+                    ev.data.fd = client;
+                    epoll_ctl(m_epoll, EPOLL_CTL_ADD, client, &ev);
+                    continue;
+                }
 
-            std::string message(buffer, bytesReceived);
-            bool isWebsocket = httpParser::checkUpgradeRequest(message);
+                char buffer[BUFFER_SIZE] = {0};
 
+                int bytes = read(fd, buffer, BUFFER_SIZE);
 
-            if (isWebsocket){
-                log(message);
-                sendUpgradeRequest(message);
-                char frame_buffer[BUFFER_SIZE] = {0};
-                while(true){
-                    int bytes_recieved = read(m_new_socket, frame_buffer, BUFFER_SIZE);
-                    if (!bytes_recieved) break;
-                    if (bytes_recieved < 0) exitWithError("Connection closed with some error");
-                    std::string value = decodeFrame(frame_buffer, bytes_recieved);
+                if(bytes <=0){
+                    epoll_ctl(m_epoll, EPOLL_CTL_DEL, fd, nullptr);
+                    close(fd);
+                    upgraded.erase(fd);
+                    continue;
+                }
+
+                m_new_socket = fd;
+
+                if(upgraded.count(fd) == 0){
+                    std::string message(buffer, bytes);
+
+                    if(httpParser::checkUpgradeRequest(message)){
+                        sendUpgradeRequest(message);
+                        upgraded.insert(fd);
+                    } else {
+                        sendResponse();
+                        epoll_ctl(m_epoll, EPOLL_CTL_DEL, fd, nullptr);
+                        close(fd);
+                    }
+                } else{
+                    std::string value = decodeFrame(buffer, bytes);
                     log(value);
                     std::string response = encodeFrame(value);
-                    write(m_new_socket, response.c_str(), response.size());
+                    write(fd, response.c_str(), response.size());
                 }
-                log("Connection closed");
-                close(m_new_socket);
-            }else {
-                sendResponse();
-                close(m_new_socket);
             }
-        }
+       }
     }
 
     std::string extractWebSocketKey(const std::string &message){
